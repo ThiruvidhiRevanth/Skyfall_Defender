@@ -196,6 +196,7 @@ class _MainState extends State<Main> {
                         onTapUp: (_) => controller.stopMoving(),
                         onTapCancel: () => controller.stopMoving(),
                         child: ElevatedButton(
+                          
                           onPressed: () => controller.moveLeft(),
                           style: ElevatedButton.styleFrom(
                             shape: const CircleBorder(),

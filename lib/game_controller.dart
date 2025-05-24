@@ -25,27 +25,19 @@ class GameController extends GetxController {
 
   final AudioPlayer _movePlayer = AudioPlayer();
   final AudioPlayer _bulletPlayer = AudioPlayer();
+   
   
  
 
   @override
   void onInit() {
     super.onInit();
-     _initializeAudio();
+
      FlameAudio.bgm.initialize();
-    _initializeAudio();
+   
   }
 
-  Future<void> _initializeAudio() async {
-    try {
-      await _movePlayer.setSource(AssetSource('audio/move.wav'));
-      await _bulletPlayer.setSource(AssetSource('audio/bullet.mp3'));
-  
-    } catch (e) {
-      print('Audio initialization error: $e');
-    }
-  }
-
+ 
   void _playEffect(AudioPlayer player, String source) async {
   try {
     final now = DateTime.now();
@@ -53,10 +45,11 @@ class GameController extends GetxController {
       _lastEffectTime = now;
 
       if (kIsWeb) {
-        // Re-create a fresh player for web short sounds
+        
         final webPlayer = AudioPlayer();
+        await webPlayer.setVolume(3.0);
         await webPlayer.play(AssetSource(source));
-        await webPlayer.dispose(); // Dispose after playing
+        await webPlayer.dispose(); 
       } else {
         await player.stop();
         await player.play(AssetSource(source));
@@ -94,7 +87,7 @@ bool _isMobileBrowser() {
   void startMovingLeft() {
     if (_isMoving) return;
     _isMoving = true;
-    _playEffect(_movePlayer, 'audio/move.wav');
+    _movePlayer.play(AssetSource('audio/move.wav'));
     time?.cancel();
     time = dart_async.Timer.periodic(Duration(milliseconds: 100), (_) => moveLeft(noSound: true));
   }
@@ -102,7 +95,7 @@ bool _isMobileBrowser() {
   void startMovingRight() {
     if (_isMoving) return;
     _isMoving = true;
-    _playEffect(_movePlayer, 'audio/move.wav');
+       _movePlayer.play(AssetSource('audio/move.wav'));
     time?.cancel();
     time = dart_async.Timer.periodic(Duration(milliseconds: 100), (_) => moveRight(noSound: true));
   }
@@ -116,14 +109,14 @@ bool _isMobileBrowser() {
 
   void moveLeft({bool noSound = false}) {
     if (!noSound) {
-      _playEffect(_movePlayer, 'audio/move.wav');
+        _movePlayer.play(AssetSource('audio/move.wav'));
     }
     playerX.value = (playerX.value - 20).clamp(0, screenwidth - playerWidth);
   }
 
   void moveRight({bool noSound = false}) {
     if (!noSound) {
-      _playEffect(_movePlayer, 'audio/move.wav');
+         _movePlayer.play(AssetSource('audio/move.wav'));
     }
     playerX.value = (playerX.value + 20).clamp(0, screenwidth - playerWidth);
   }
@@ -131,7 +124,8 @@ bool _isMobileBrowser() {
   void startshoot(BlockGame game) {
     if (_isShooting) return;
     _isShooting = true;
-    _playEffect(_bulletPlayer, 'audio/bullet.mp3');
+            _movePlayer.play(AssetSource('audio/bullet.mp3'));
+
     _shootTimer?.cancel();
     _shootTimer = dart_async.Timer.periodic(Duration(milliseconds: 200), (_) => shoot(game, noSound: true));
   }
@@ -146,7 +140,8 @@ bool _isMobileBrowser() {
   void shoot(BlockGame game, {bool noSound = false}) {
     if (game.children.whereType<Bullet>().length > 10) return;
     if (!noSound) {
-      _playEffect(_bulletPlayer, 'audio/bullet.mp3');
+                  _movePlayer.play(AssetSource('audio/bullet.mp3'));
+
     }
     final bullet = Bullet(
       position: Vector2(playerX.value + playerWidth / 1 - 20, playerY.value - 20),
