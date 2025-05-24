@@ -24,41 +24,42 @@ class GameController extends GetxController {
   DateTime? _lastEffectTime;
 
   final AudioPlayer _movePlayer = AudioPlayer();
-  final AudioPlayer _bulletPlayer = AudioPlayer();
+  // final AudioPlayer _bulletPlayer = AudioPlayer();
    
   
  
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-
+ await _movePlayer.setSource(AssetSource('audio/bullet.mp3'));
+      await _movePlayer.setSource(AssetSource('audio/move.wav'));
      FlameAudio.bgm.initialize();
    
   }
 
  
-  void _playEffect(AudioPlayer player, String source) async {
-  try {
-    final now = DateTime.now();
-    if (_lastEffectTime == null || now.difference(_lastEffectTime!).inMilliseconds > 50) {
-      _lastEffectTime = now;
+//   void _playEffect(AudioPlayer player, String source) async {
+//   try {
+//     final now = DateTime.now();
+//     if (_lastEffectTime == null || now.difference(_lastEffectTime!).inMilliseconds > 50) {
+//       _lastEffectTime = now;
 
-      if (kIsWeb) {
+//       if (kIsWeb ) {
         
-        final webPlayer = AudioPlayer();
-        await webPlayer.setVolume(3.0);
-        await webPlayer.play(AssetSource(source));
-        await webPlayer.dispose(); 
-      } else {
-        await player.stop();
-        await player.play(AssetSource(source));
-      }
-    }
-  } catch (e) {
-    print('Effect playback error: $e');
-  }
-}
+//         final webPlayer = AudioPlayer();
+//         await webPlayer.setVolume(3.0);
+//         await webPlayer.play(AssetSource(source));
+//         await webPlayer.dispose(); 
+//       } else {
+//         await player.stop();
+//         await player.play(AssetSource(source));
+//       }
+//     }
+//   } catch (e) {
+//     print('Effect playback error: $e');
+//   }
+// }
 
 
 bool _isMobileBrowser() {
@@ -134,7 +135,7 @@ bool _isMobileBrowser() {
     _isShooting = false;
     _shootTimer?.cancel();
     _shootTimer = null;
-    _bulletPlayer.stop();
+    // _bulletPlayer.stop();
   }
 
   void shoot(BlockGame game, {bool noSound = false}) {
@@ -186,7 +187,7 @@ bool _isMobileBrowser() {
     stopMoving();
     stopShooting();
     _movePlayer.dispose();
-    _bulletPlayer.dispose();
+    // _bulletPlayer.dispose();
     FlameAudio.bgm.stop();
     super.onClose();
   }
